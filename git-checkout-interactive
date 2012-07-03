@@ -1,0 +1,18 @@
+#!/usr/bin/php
+<?php
+
+$files = `git st -s | awk '/^ M/{print $2}'`;
+$files = explode(PHP_EOL, trim($files));
+foreach ($files as $file) {
+    echo PHP_EOL;
+    echo `git diff $file`;
+    echo "git checkout '$file'? (yN)".PHP_EOL;
+    $reply = `bash -c "read -n 1 ; echo \\\$REPLY"`;
+    $reply = trim($reply);
+    if (in_array($reply, array('Y', 'y')))	 {
+        echo "...checkout".PHP_EOL;
+        echo `git checkout $file`;
+    } else {
+        echo "...skipped".PHP_EOL;
+    }
+}

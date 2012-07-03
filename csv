@@ -1,0 +1,2 @@
+#!/bin/bash
+cat $2 | column -s $1 -t | less -#2 -N -S

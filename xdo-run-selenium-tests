@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+# Usage run-selenium-tests <window-title>
+OLD_ACTIVE_WINDOW=`xdotool getactivewindow`
+SELENIUM_WINDOW=`xdotool search "Selenium IDE" 2> /dev/null | head -1`
+FIREFOX_WINDOW=`xdotool search "Mozilla" 2> /dev/null | head -1`
+`xdotool windowactivate #{SELENIUM_WINDOW}`
+`xdotool windowfocus #{SELENIUM_WINDOW}`
+`xdotool windowraise #{SELENIUM_WINDOW}`
+
+old_mouse_x, old_mouse_y = *`xdotool getmouselocation 2> /dev/null`.scan(/x:([0-9]+) y:([0-9]+)/).flatten
+
+wininfo_rows = `xwininfo -id #{SELENIUM_WINDOW}`.split("\n")
+win_pos_x = wininfo_rows[3][/[0-9]+/].to_i
+win_pos_y = wininfo_rows[4][/[0-9]+/].to_i
+
+# click pause and then run button
+run_button_offset_x = 120 + 40
+run_button_offset_y = 60
+pause_button_offset_x = 170
+pause_button_offset_y = 60
+`xdotool mousemove #{win_pos_x + pause_button_offset_x} #{win_pos_y + pause_button_offset_y}`
+`xdotool click 1`
+`xdotool mousemove #{win_pos_x + run_button_offset_x} #{win_pos_y + run_button_offset_y}`
+`xdotool click 1`
+
+# restore focus
+`xdotool windowfocus #{OLD_ACTIVE_WINDOW}`
+`xdotool windowraise #{OLD_ACTIVE_WINDOW}`
+
+# focus firefox
+#~ `xdotool windowactivate #{FIREFOX_WINDOW}`
+#~ `xdotool windowfocus #{FIREFOX_WINDOW}`
+#~ `xdotool windowraise #{FIREFOX_WINDOW}`
+
+# restore mouse position
+`xdotool mousemove #{old_mouse_x} #{old_mouse_y}`

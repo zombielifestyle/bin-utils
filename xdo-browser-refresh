@@ -1,0 +1,11 @@
+#!/bin/sh
+
+OLD_WINDOW=`xdotool getactivewindow`
+WINDOW=`xdotool search --onlyvisible --classname "$1" 2> /dev/null | head -1`
+xdotool windowfocus $WINDOW
+xdotool windowraise $WINDOW
+
+xdotool key F5
+
+xdotool windowfocus $OLD_WINDOW
+xdotool windowraise $OLD_WINDOW
